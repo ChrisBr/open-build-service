@@ -17,7 +17,9 @@ class Review < ApplicationRecord
   validates :reason, length: { maximum: 65534 }
 
   validate :check_initial, on: [:create]
-  validate :validate_recursive
+  # Validate the review is not assigned to a review which is already assigned to this review
+  validate :validate_non_symmetric_assignment
+  validate :validate_not_self_assigned
 
   belongs_to :review_assigned_from, class_name: 'Review', foreign_key: :review_id
   has_one :review_assigned_to, class_name: 'Review', foreign_key: :review_id
@@ -37,8 +39,17 @@ class Review < ApplicationRecord
     end
   end
 
-  def validate_recursive
+  def validate_non_symmetric_assignment
     if review_assigned_from && review_assigned_from == review_assigned_to
+      errors.add(
+        :review_id,
+        "assigned to review which is already assigned to this review"
+      )
+    end
+  end
+
+  def validate_not_self_assigned
+    if persisted? && id == review_id
       errors.add(:review_id, "recursive assignment")
     end
   end
