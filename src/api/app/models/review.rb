@@ -17,7 +17,8 @@ class Review < ApplicationRecord
   validates :reason, length: { maximum: 65534 }
 
   validate :check_initial, on: [:create]
-  validate :validate_non_symmetric_assignment # Validate the review is not assigned to a review which is already assigned to this review
+  # Validate the review is not assigned to a review which is already assigned to this review
+  validate :validate_non_symmetric_assignment
   validate :validate_not_self_assigned
 
   belongs_to :review_assigned_from, class_name: 'Review', foreign_key: :review_id
