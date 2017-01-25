@@ -41,7 +41,7 @@ class Review < ApplicationRecord
   def validate_non_symmetric_assignment
     if review_assigned_from && review_assigned_from == review_assigned_to
       errors.add(
-        :review_id, 
+        :review_id,
         "assigned to review which is already assigned to this review"
       )
     end
