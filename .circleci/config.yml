@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: registry.opensuse.org/obs/server/unstable/container/sle12/sp3/images/x86_64/openbuildservice/frontend-base:latest
+        environment:
+          NOKOGIRI_USE_SYSTEM_LIBRARIES: 1
+      - image: registry.opensuse.org/obs/server/unstable/container/sle12/sp3/images/x86_64/openbuildservice/mariadb:latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: bundle install --jobs=3 --retry=3 --path vendor/bundle
+      - run:
+          name: Print the Current Time
+          command: date
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
