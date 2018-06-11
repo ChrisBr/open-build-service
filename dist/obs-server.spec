@@ -326,7 +326,6 @@ rm src/api/Dockerfile.frontend-base
 # drop build script, we require the installed one from own package
 rm -rf src/backend/build
 
-find -name .keep | xargs rm -rf
 # copy gem files into cache
 mkdir -p src/api/vendor/cache
 cp %{_sourcedir}/vendor/bundle/vendor/cache/*.gem src/api/vendor/cache
@@ -379,6 +378,8 @@ sed -i 's/\/this\/will\/be\/overwritten\/or\/wrapped\/anyways\/do\/not\/worry\/r
 # Patch from diff-lcs gem
 sed -i 's/#!ruby -w/#!\/usr\/bin\/ruby -w/' %{buildroot}/%_libdir/obs-api/ruby/*/gems/diff-lcs*/bin/htmldiff
 sed -i 's/#!ruby -w/#!\/usr\/bin\/ruby -w/' %{buildroot}/%_libdir/obs-api/ruby/*/gems/diff-lcs*/bin/ldiff
+
+find %{buildroot}/%_libdir -name .keep -o -name .gitignore | xargs rm -rf
 
 export OBS_VERSION="%{version}"
 DESTDIR=%{buildroot} make install FILLUPDIR=%{_fillupdir}
