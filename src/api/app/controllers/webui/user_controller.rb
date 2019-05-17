@@ -23,14 +23,8 @@ class Webui::UserController < Webui::WebuiController
     @account_edit_link = CONFIG['proxy_auth_account_page']
 
     return unless switch_to_webui2
-    @last_day = Time.zone.today
 
-    # take the last 52 weeks
-    @first_day = @last_day - (52 * 7)
-    # move back to the monday before (make it up to 53 weeks)
-    @first_day -= (@first_day.cwday - 1)
-
-    @activity_hash = User::Contributions.new(@displayed_user, @first_day).activity_hash
+    @graph = User::Contribution::Graph.new(user: @displayed_user)
   end
 
   def home
